@@ -2,6 +2,7 @@ package com.gatevo.aframe;
 
 import java.util.Map;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -10,10 +11,10 @@ import android.database.sqlite.SQLiteDatabase;
 public class DatabaseModel{
 	
 	private SQLiteConnector dbConnector;
-	private SQLiteDatabase db;
+	public SQLiteDatabase db;
 	private String tableName;
 	
-	private DatabaseModel(Context context, Map<String,String> columns, String tableName){
+	protected DatabaseModel(Context context, String[] columns, String tableName){
 		this.dbConnector = new SQLiteConnector(context, "datastore.db", null, 1, columns, tableName);
 		
 		this.db = this.dbConnector.getWritableDatabase();
@@ -32,6 +33,14 @@ public class DatabaseModel{
 		}
 		
 		return res;
+	}
+	
+	public long smartInsert(ContentValues insert){
+		return this.db.insert(this.tableName, null, insert);
+	}
+	
+	public int smartUpdate(ContentValues values, String[] where){
+		return this.db.update(this.tableName, values, null, where);
 	}
 	
 }
